@@ -1,11 +1,26 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import client from '../../api/client'
+import { useTracking } from '../../hooks/useTracking'
 
 export default function QuizBlock({ block }) {
   const quiz = block.quiz
+  const { lessonId } = useParams()
+  const { trackEvent } = useTracking()
   const [selected, setSelected] = useState({}) // question_id -> option_id
   const [result, setResult] = useState(null)
   const [submitting, setSubmitting] = useState(false)
+  const questionShownAt = useRef({})
+
+  const context = { lesson_id: Number(lessonId), content_block_id: block.id }
+
+  useEffect(() => {
+    trackEvent('quiz_started', { ...context, payload: { quiz_id: quiz.id } })
+    quiz.questions.forEach((q) => {
+      questionShownAt.current[q.id] = Date.now()
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   function selectOption(questionId, optionId) {
     if (result) return
@@ -21,6 +36,23 @@ export default function QuizBlock({ block }) {
     const res = await client.post(`/quizzes/${quiz.id}/submit`, { answers })
     setResult(res.data)
     setSubmitting(false)
+
+    res.data.results.forEach((r) => {
+      const timeTakenMs = Date.now() - (questionShownAt.current[r.question_id] || Date.now())
+      trackEvent('quiz_answer_submitted', {
+        ...context,
+        payload: {
+          question_id: r.question_id,
+          selected_option_id: r.option_id,
+          is_correct: r.is_correct,
+          time_taken_ms: timeTakenMs,
+        },
+      })
+    })
+    trackEvent('quiz_completed', {
+      ...context,
+      payload: { quiz_id: quiz.id, score: res.data.score, total_questions: res.data.total_questions },
+    })
   }
 
   const allAnswered = quiz.questions.every((q) => selected[q.id])

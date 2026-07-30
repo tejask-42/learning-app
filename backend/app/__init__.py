@@ -14,8 +14,10 @@ def create_app(config_class=Config):
     cors.init_app(app, supports_credentials=True)
 
     from app import models  # noqa: F401 (ensures models are registered for migrations)
+    from app.routes.analytics import analytics_bp
     from app.routes.auth import auth_bp
     from app.routes.courses import courses_bp
+    from app.routes.events import events_bp
     from app.routes.health import health_bp
     from app.routes.quizzes import quizzes_bp
 
@@ -23,6 +25,8 @@ def create_app(config_class=Config):
     app.register_blueprint(auth_bp)
     app.register_blueprint(courses_bp)
     app.register_blueprint(quizzes_bp)
+    app.register_blueprint(events_bp)
+    app.register_blueprint(analytics_bp)
 
     @login_manager.user_loader
     def load_user(user_id):

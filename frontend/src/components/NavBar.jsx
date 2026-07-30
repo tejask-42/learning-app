@@ -15,6 +15,7 @@ export default function NavBar() {
   return (
     <nav style={{ display: 'flex', gap: '1rem', padding: '1rem', borderBottom: '1px solid #ddd' }}>
       <Link to="/">Dashboard</Link>
+      <Link to="/admin">Activity</Link>
       <span style={{ marginLeft: 'auto' }}>{user.display_name}</span>
       <button onClick={handleLogout}>Log out</button>
     </nav>
