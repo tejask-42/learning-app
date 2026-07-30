@@ -13,8 +13,13 @@ def create_app(config_class=Config):
     login_manager.init_app(app)
     cors.init_app(app, supports_credentials=True)
 
+    from app import models  # noqa: F401 (ensures models are registered for migrations)
     from app.routes.health import health_bp
 
     app.register_blueprint(health_bp)
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        return models.User.query.get(int(user_id))
 
     return app
