@@ -15,10 +15,14 @@ def create_app(config_class=Config):
 
     from app import models  # noqa: F401 (ensures models are registered for migrations)
     from app.routes.auth import auth_bp
+    from app.routes.courses import courses_bp
     from app.routes.health import health_bp
+    from app.routes.quizzes import quizzes_bp
 
     app.register_blueprint(health_bp)
     app.register_blueprint(auth_bp)
+    app.register_blueprint(courses_bp)
+    app.register_blueprint(quizzes_bp)
 
     @login_manager.user_loader
     def load_user(user_id):
