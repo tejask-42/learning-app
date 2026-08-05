@@ -13,18 +13,41 @@ export default function Lesson() {
     client.get(`/lessons/${lessonId}`).then((res) => setLesson(res.data))
   }, [lessonId])
 
-  if (!lesson) return <p>Loading...</p>
+  if (!lesson) return <p className="loading">Loading...</p>
 
   return (
-    <div>
-      <Link to={`/courses/${lesson.course_id}`}>&larr; Back to course</Link>
-      <h1>{lesson.title}</h1>
-      {lesson.content_blocks.map((block) => {
-        if (block.block_type === 'text') return <TextBlock key={block.id} block={block} />
-        if (block.block_type === 'video') return <VideoBlock key={block.id} block={block} />
-        if (block.block_type === 'quiz') return <QuizBlock key={block.id} block={block} />
-        return null
-      })}
+    <div className="page">
+      <Link to={`/courses/${lesson.course_id}`} className="back-link">
+        &larr; Back to course
+      </Link>
+
+      <div className="page-header">
+        <h1>{lesson.title}</h1>
+      </div>
+
+      <div className="stack">
+        {lesson.content_blocks.map((block) => {
+          if (block.block_type === 'text')
+            return (
+              <div key={block.id} className="card content-block">
+                <TextBlock block={block} />
+              </div>
+            )
+          if (block.block_type === 'video')
+            return (
+              <div key={block.id} className="content-block">
+                <VideoBlock block={block} />
+              </div>
+            )
+          if (block.block_type === 'quiz')
+            return (
+              <div key={block.id} className="card content-block">
+                <QuizBlock block={block} />
+              </div>
+            )
+          return null
+        })}
+      </div>
     </div>
   )
 }

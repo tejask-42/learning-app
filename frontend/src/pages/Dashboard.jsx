@@ -4,7 +4,7 @@ import client from '../api/client'
 import { useTracking } from '../hooks/useTracking'
 
 export default function Dashboard() {
-  const [courses, setCourses] = useState([])
+  const [courses, setCourses] = useState(null)
   const { trackEvent } = useTracking()
 
   useEffect(() => {
@@ -12,13 +12,21 @@ export default function Dashboard() {
   }, [])
 
   return (
-    <div>
-      <h1>Courses</h1>
-      <ul>
-        {courses.map((c) => (
-          <li key={c.id}>
+    <div className="page">
+      <div className="page-header">
+        <h1>Courses</h1>
+        <p>Pick a course to start learning.</p>
+      </div>
+
+      {!courses ? (
+        <p className="loading">Loading...</p>
+      ) : (
+        <div className="card-list">
+          {courses.map((c) => (
             <Link
+              key={c.id}
               to={`/courses/${c.id}`}
+              className="card card-link stack"
               onClick={() =>
                 trackEvent('click', {
                   course_id: c.id,
@@ -26,12 +34,12 @@ export default function Dashboard() {
                 })
               }
             >
-              {c.title}
+              <h2>{c.title}</h2>
+              <p>{c.description}</p>
             </Link>
-            <p>{c.description}</p>
-          </li>
-        ))}
-      </ul>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

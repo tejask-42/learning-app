@@ -27,39 +27,62 @@ export default function Login() {
   }
 
   return (
-    <div style={{ maxWidth: 360, margin: '4rem auto' }}>
-      <h1>{isRegister ? 'Register' : 'Log in'}</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Email</label>
-          <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" required />
+    <div className="auth-shell">
+      <div className="card auth-card">
+        <div className="page-header">
+          <h1>{isRegister ? 'Create account' : 'Welcome back'}</h1>
+          <p>{isRegister ? 'Register to start learning.' : 'Log in to continue learning.'}</p>
         </div>
-        {isRegister && (
-          <div>
-            <label>Display name</label>
-            <input value={displayName} onChange={(e) => setDisplayName(e.target.value)} required />
+
+        <form onSubmit={handleSubmit} className="stack">
+          <div className="field">
+            <label>Email</label>
+            <input
+              className="input"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              type="email"
+              required
+            />
           </div>
-        )}
-        <div>
-          <label>Password</label>
-          <input
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            type="password"
-            required
-          />
-        </div>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        <button type="submit">{isRegister ? 'Register' : 'Log in'}</button>
-      </form>
-      <button onClick={() => setIsRegister(!isRegister)}>
-        {isRegister ? 'Already have an account? Log in' : "Don't have an account? Register"}
-      </button>
-      {!isRegister && (
-        <p style={{ marginTop: '1rem', color: '#666' }}>
-          Demo login: demo1@example.com / password123
+          {isRegister && (
+            <div className="field">
+              <label>Display name</label>
+              <input
+                className="input"
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+                required
+              />
+            </div>
+          )}
+          <div className="field">
+            <label>Password</label>
+            <input
+              className="input"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              type="password"
+              required
+            />
+          </div>
+          {error && <p className="error-text">{error}</p>}
+          <button type="submit" className="btn btn-primary btn-block">
+            {isRegister ? 'Register' : 'Log in'}
+          </button>
+        </form>
+
+        <p className="auth-switch">
+          {isRegister ? 'Already have an account?' : "Don't have an account?"}{' '}
+          <a href="#" onClick={(e) => { e.preventDefault(); setIsRegister(!isRegister) }}>
+            {isRegister ? 'Log in' : 'Register'}
+          </a>
         </p>
-      )}
+
+        {!isRegister && (
+          <span className="badge">Demo login: demo1@example.com / password123</span>
+        )}
+      </div>
     </div>
   )
 }

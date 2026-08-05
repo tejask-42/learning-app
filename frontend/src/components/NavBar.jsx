@@ -13,11 +13,22 @@ export default function NavBar() {
   }
 
   return (
-    <nav style={{ display: 'flex', gap: '1rem', padding: '1rem', borderBottom: '1px solid #ddd' }}>
-      <Link to="/">Dashboard</Link>
-      <Link to="/admin">Activity</Link>
-      <span style={{ marginLeft: 'auto' }}>{user.display_name}</span>
-      <button onClick={handleLogout}>Log out</button>
+    <nav className="navbar">
+      <Link to="/" className="navbar-brand">
+        Learning App
+      </Link>
+      <Link to="/" className="nav-link">
+        Courses
+      </Link>
+      <Link to="/admin" className="nav-link">
+        Activity
+      </Link>
+      <div className="navbar-spacer">
+        <span className="navbar-user">{user.display_name}</span>
+        <button onClick={handleLogout} className="btn btn-ghost">
+          Log out
+        </button>
+      </div>
     </nav>
   )
 }

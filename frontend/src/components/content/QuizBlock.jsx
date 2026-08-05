@@ -58,41 +58,48 @@ export default function QuizBlock({ block }) {
   const allAnswered = quiz.questions.every((q) => selected[q.id])
 
   return (
-    <div style={{ border: '1px solid #ddd', padding: '1rem', maxWidth: 640 }}>
+    <div className="quiz-card">
       <h3>{quiz.title}</h3>
       {quiz.questions.map((q) => (
-        <div key={q.id} style={{ marginBottom: '1rem' }}>
-          <p>{q.question_text}</p>
-          {q.options.map((o) => {
-            const resultInfo = result?.results.find((r) => r.question_id === q.id)
-            const isSelected = selected[q.id] === o.id
-            let color = undefined
-            if (result && isSelected) {
-              color = resultInfo?.is_correct ? 'green' : 'red'
-            }
-            return (
-              <label key={o.id} style={{ display: 'block', color }}>
-                <input
-                  type="radio"
-                  name={`question-${q.id}`}
-                  checked={isSelected}
-                  onChange={() => selectOption(q.id, o.id)}
-                  disabled={!!result}
-                />
-                {o.option_text}
-              </label>
-            )
-          })}
+        <div key={q.id} className="quiz-question">
+          <p className="quiz-question-text">{q.question_text}</p>
+          <div className="quiz-options">
+            {q.options.map((o) => {
+              const resultInfo = result?.results.find((r) => r.question_id === q.id)
+              const isSelected = selected[q.id] === o.id
+              let stateClass = ''
+              if (result && isSelected) {
+                stateClass = resultInfo?.is_correct ? 'is-correct' : 'is-incorrect'
+              } else if (isSelected) {
+                stateClass = 'is-selected'
+              }
+              return (
+                <label
+                  key={o.id}
+                  className={`quiz-option ${stateClass} ${result ? 'is-disabled' : ''}`}
+                >
+                  <input
+                    type="radio"
+                    name={`question-${q.id}`}
+                    checked={isSelected}
+                    onChange={() => selectOption(q.id, o.id)}
+                    disabled={!!result}
+                  />
+                  {o.option_text}
+                </label>
+              )
+            })}
+          </div>
         </div>
       ))}
       {!result ? (
-        <button onClick={handleSubmit} disabled={!allAnswered || submitting}>
+        <button onClick={handleSubmit} disabled={!allAnswered || submitting} className="btn btn-primary">
           Submit
         </button>
       ) : (
-        <p>
+        <span className="quiz-score">
           Score: {result.score} / {result.total_questions}
-        </p>
+        </span>
       )}
     </div>
   )

@@ -73,7 +73,7 @@ export default function VideoBlock({ block }) {
   }, [block.video_youtube_id])
 
   return (
-    <div style={{ aspectRatio: '16 / 9', maxWidth: 640 }}>
+    <div className="video-block">
       <div ref={containerRef} style={{ width: '100%', height: '100%' }} />
     </div>
   )
